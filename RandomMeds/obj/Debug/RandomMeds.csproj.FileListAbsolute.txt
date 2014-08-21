@@ -1,0 +1,9 @@
+D:\GitHub\RandomMeds\RandomMeds\bin\Debug\RandomMeds.exe.config
+D:\GitHub\RandomMeds\RandomMeds\bin\Debug\RandomMeds.exe
+D:\GitHub\RandomMeds\RandomMeds\bin\Debug\RandomMeds.pdb
+D:\GitHub\RandomMeds\RandomMeds\obj\Debug\RandomMeds.csprojResolveAssemblyReference.cache
+D:\GitHub\RandomMeds\RandomMeds\obj\Debug\RandomMeds.Form1.resources
+D:\GitHub\RandomMeds\RandomMeds\obj\Debug\RandomMeds.Properties.Resources.resources
+D:\GitHub\RandomMeds\RandomMeds\obj\Debug\RandomMeds.csproj.GenerateResource.Cache
+D:\GitHub\RandomMeds\RandomMeds\obj\Debug\RandomMeds.exe
+D:\GitHub\RandomMeds\RandomMeds\obj\Debug\RandomMeds.pdb
