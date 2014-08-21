@@ -159,15 +159,14 @@ namespace RandomMeds
             uncheckAll();
             int nr = 0;
             Random rnd = new Random();
-            for (int i = 1; i <= 20; i++)
-            {
-                int tempROK = 0;
+             int tempROK = 0;
                 int tempRNOT = 0;
                 int tempBNOT = 0;
                 int tempBOK = 0;
-                for (int j = 1; j <= 4; j++)
-                {
-                    nr++;
+            for (int i = 1; i <= 80; i++)
+            {
+               
+                    
                     int rand = rnd.Next(1, 5);
                     foreach (Control c in this.Controls)
                     {
@@ -176,7 +175,7 @@ namespace RandomMeds
                             CheckBox cb = (CheckBox)c;
                             if (exclList.Contains(cb.Tag.ToString()))
                             {
-                                rand = int.Parse(cb.Tag.ToString().Split(':')[1]);
+                                //rand = int.Parse(cb.Tag.ToString().Split(':')[1]);
                                 //exclList.Remove(cb.Tag.ToString());
                             }
                             //string[] words = cb.Tag.ToString().Split(':');
@@ -209,7 +208,7 @@ namespace RandomMeds
                 if ((tempBNOT != tempBOK) || (tempRNOT != tempROK))
                 {
                     strList.Clear();
-                    i--;
+                    
                     tempRNOT = 0;
                     tempROK = 0;
                     tempBOK = 0;
@@ -241,8 +240,9 @@ namespace RandomMeds
                     strList.Clear();
                     //MessageBox.Show("Nummer is: " + nr + " en index is: " + teller);
                 }
-            }
             isGo = false;
+            }
+            
         }
     }
-}
+
