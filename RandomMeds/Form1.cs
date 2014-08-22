@@ -12,6 +12,8 @@ namespace RandomMeds
 {
     public partial class Form1 : Form
     {
+        public int outerLoop = 8;
+        public int innerLoop = 10;
         private int raasOK = 0;
         private int raasNOT = 0;
         private int blockOK = 0;
@@ -159,30 +161,41 @@ namespace RandomMeds
             uncheckAll();
             int nr = 0;
             Random rnd = new Random();
-             int tempROK = 0;
+            for (int i = 1; i <= outerLoop; i++)
+            {
+                int tempROK = 0;
                 int tempRNOT = 0;
                 int tempBNOT = 0;
                 int tempBOK = 0;
-            for (int i = 1; i <= 80; i++)
-            {
-               
-                    
-                    int rand = rnd.Next(1, 5);
+                for (int j = 1; j <= innerLoop; j++)
+                {
+                    nr++;
+                    int rand1 = rnd.Next(1, 3);
+                    int rand2 = rnd.Next(3, 5);
+                    foreach (string s in exclList)
+                    {
+                        if(nr == int.Parse(s.Split(':')[0])){
+                            int randVal = int.Parse(s.Split(':')[1]);
+                            if ( randVal> 2)
+                            {
+                                rand2 = randVal;
+                            }
+                            else
+                            {
+                                rand1 = randVal;
+                            }
+                        }
+                    }
                     foreach (Control c in this.Controls)
                     {
                         if (c is CheckBox)
                         {
                             CheckBox cb = (CheckBox)c;
-                            if (exclList.Contains(cb.Tag.ToString()))
-                            {
-                                //rand = int.Parse(cb.Tag.ToString().Split(':')[1]);
-                                //exclList.Remove(cb.Tag.ToString());
-                            }
-                            //string[] words = cb.Tag.ToString().Split(':');
-                            if (cb.Tag.Equals(nr + ":" + rand))
+                            string tagString = cb.Tag.ToString();
+                            if (cb.Tag.Equals(nr + ":" + rand1))
                             {
                                 strList.Add(cb.Tag.ToString());
-                                switch (rand)
+                                switch (rand1)
                                 {
                                     case 1:
                                         tempBOK += 1;
@@ -190,6 +203,16 @@ namespace RandomMeds
                                     case 2:
                                         tempBNOT += 1;
                                         break;
+                                    default:
+                                        Console.WriteLine("Default case");
+                                        break;
+                                }
+                            }
+                            if (cb.Tag.Equals(nr + ":" + rand2))
+                            {
+                                strList.Add(cb.Tag.ToString());
+                                switch (rand2)
+                                {
                                     case 3:
                                         tempROK += 1;
                                         break;
@@ -208,12 +231,12 @@ namespace RandomMeds
                 if ((tempBNOT != tempBOK) || (tempRNOT != tempROK))
                 {
                     strList.Clear();
-                    
+                    i--;
                     tempRNOT = 0;
                     tempROK = 0;
                     tempBOK = 0;
                     tempBNOT = 0;
-                    nr -= 4;
+                    nr -= innerLoop;
                 }
                 else
                 {
@@ -240,9 +263,63 @@ namespace RandomMeds
                     strList.Clear();
                     //MessageBox.Show("Nummer is: " + nr + " en index is: " + teller);
                 }
-            isGo = false;
             }
-            
+            isGo = false;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            isGo = true;
+            uncheckAll();
+            isGo = false;
+        }
+
+        private void toolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            innerLoop = 4;
+            outerLoop = 20;
+        }
+
+        private void toolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+            innerLoop = 5;
+            outerLoop = 16;
+        }
+
+        private void toolStripMenuItem4_Click(object sender, EventArgs e)
+        {
+            innerLoop = 8;
+            outerLoop = 10;
+        }
+
+        private void toolStripMenuItem5_Click(object sender, EventArgs e)
+        {
+            innerLoop = 10;
+            outerLoop = 8;
+        }
+
+        private void toolStripMenuItem6_Click(object sender, EventArgs e)
+        {
+            innerLoop = 16;
+            outerLoop = 5;
+        }
+
+        private void toolStripMenuItem7_Click(object sender, EventArgs e)
+        {
+            innerLoop = 20;
+            outerLoop = 4;
+        }
+
+        private void toolStripMenuItem8_Click(object sender, EventArgs e)
+        {
+            innerLoop = 40;
+            outerLoop = 2;
+        }
+
+        private void toolStripMenuItem9_Click(object sender, EventArgs e)
+        {
+            innerLoop = 80;
+            outerLoop = 1;
         }
     }
-
+}
