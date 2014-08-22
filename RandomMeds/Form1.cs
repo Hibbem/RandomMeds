@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,8 +19,8 @@ namespace RandomMeds
         private int raasNOT = 0;
         private int blockOK = 0;
         private int blockNOT = 0;
-        private int teller;
         private bool isGo = false;
+        private List<String> defList = new List<string>();
         private List<String> strList = new List<string>();
         private List<String> exclList = new List<string>();
         private List<int> numberList = Enumerable.Range(1, 80).ToList();
@@ -36,18 +37,13 @@ namespace RandomMeds
             createNames();
 
         }
+        
         private void Check_CheckedChanged(object sender, EventArgs e)
         {
-            //var list = new List<int> {1,2,3,4,5};
-            //var intVar = 4;
-            //var exists = list.Contains(intVar);
             CheckBox cb = (CheckBox)sender;
-            //MessageBox.Show("De tag is: " +cb.Tag);
             if (cb.Checked == true && !isGo)
             {
                 exclList.Add(cb.Tag.ToString());
-                //string[] words = cb.Tag.ToString().Split(':');
-                //MessageBox.Show(words[1]);
             }
             else if(!isGo)
             {
@@ -57,7 +53,7 @@ namespace RandomMeds
         private void createNames()
         {
             int left = 90;
-            int top = 20;
+            int top = 33;
             for (int i = 0; i < 8; i++)
             {
                 Label label = new Label();
@@ -67,7 +63,6 @@ namespace RandomMeds
                 {
                     label.Text = "RAAS";
                     left += 120;
-                    Console.WriteLine("jaja");
                 }
                 else
                 {
@@ -84,7 +79,7 @@ namespace RandomMeds
         {
 
             int left = 100;
-            int top = 45;
+            int top = 55;
             for (int k = 0; k < 4; k++)
             {
                 for (int j = 1; j <= 4; j++)
@@ -103,7 +98,7 @@ namespace RandomMeds
                         this.Controls.Add(ii);
                         ii.BringToFront();
                     }
-                    top = 45;
+                    top = 55;
                     if (j == 2)
                     {
                         left += 50;
@@ -117,7 +112,7 @@ namespace RandomMeds
         }
         private void createLabels()
         {
-            int top = 50;
+            int top = 55;
             int left = 30;
             int nr = 1;
             for (int i = 0; i < 4; i++)
@@ -137,7 +132,7 @@ namespace RandomMeds
                     nr++;
                 }
                 left += 200;
-                top = 50;
+                top = 55;
             }
         }
         private void uncheckAll()
@@ -155,6 +150,7 @@ namespace RandomMeds
                 }
             }
         }
+
         private void btnGo_Click(object sender, EventArgs e)
         {
             isGo = true;
@@ -256,6 +252,7 @@ namespace RandomMeds
                             if (strList.Contains(cb.Tag.ToString()))
                             {
                                 cb.Checked = true;
+                                defList.Add(cb.Tag.ToString());
                             }
                             //teller = i;
                         }
@@ -266,7 +263,6 @@ namespace RandomMeds
             }
             isGo = false;
         }
-
         private void button1_Click(object sender, EventArgs e)
         {
             isGo = true;
@@ -279,47 +275,113 @@ namespace RandomMeds
             innerLoop = 4;
             outerLoop = 20;
         }
-
         private void toolStripMenuItem3_Click(object sender, EventArgs e)
         {
             innerLoop = 5;
             outerLoop = 16;
         }
-
         private void toolStripMenuItem4_Click(object sender, EventArgs e)
         {
             innerLoop = 8;
             outerLoop = 10;
         }
-
         private void toolStripMenuItem5_Click(object sender, EventArgs e)
         {
             innerLoop = 10;
             outerLoop = 8;
         }
-
         private void toolStripMenuItem6_Click(object sender, EventArgs e)
         {
             innerLoop = 16;
             outerLoop = 5;
         }
-
         private void toolStripMenuItem7_Click(object sender, EventArgs e)
         {
             innerLoop = 20;
             outerLoop = 4;
         }
-
         private void toolStripMenuItem8_Click(object sender, EventArgs e)
         {
             innerLoop = 40;
             outerLoop = 2;
         }
-
         private void toolStripMenuItem9_Click(object sender, EventArgs e)
         {
             innerLoop = 80;
             outerLoop = 1;
         }
+        
+        private void allToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog save = new SaveFileDialog();
+            save.FileName = "AllOutput.rdm";
+            save.Filter = "RandomMeds | *.rdm";
+            if (save.ShowDialog() == DialogResult.OK)
+            {
+                StreamWriter writer = new StreamWriter(save.OpenFile());
+                foreach (string s in defList)
+                {
+                    writer.WriteLine(s);
+                }
+                writer.Dispose();
+                writer.Close();
+            }
+        }
+        private void personalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog save = new SaveFileDialog();
+            save.FileName = "PersonalOutput.rdm";
+            save.Filter = "RandomMeds | *.rdm";
+            if (save.ShowDialog() == DialogResult.OK)
+            {
+                StreamWriter writer = new StreamWriter(save.OpenFile());
+                foreach (string s in exclList)
+                {
+                    writer.WriteLine(s);
+                }
+                writer.Dispose();
+                writer.Close();
+            }
+        }
+        private void infoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog open = new OpenFileDialog();
+            open.Filter = "RandomMeds|*.rdm";
+	    DialogResult result = open.ShowDialog(); // Show the dialog.
+	    if (result == DialogResult.OK) // Test result.
+	    {
+		StreamReader file = new StreamReader(open.FileName); 
+        string line;
+		try
+		{
+            while ((line = file.ReadLine()) != null)
+            {
+                if (!exclList.Contains(line))
+                {
+                    exclList.Add(line);
+                }
+            }
+            isGo = true;
+            foreach (Control c in this.Controls)
+            {
+                if (c is CheckBox)
+                {
+                    CheckBox cb = (CheckBox)c;
+                    if (exclList.Contains(cb.Tag.ToString()))
+                    {
+                        cb.Checked = true;
+                    }
+                }
+            } isGo = false;
+
+		}
+		catch (IOException)
+		{
+		}
+	    }
+	    //Console.WriteLine(size); // <-- Shows file size in debugging mode.
+	    //Console.WriteLine(result); // <-- For debugging use.
+	}
     }
 }
+    
