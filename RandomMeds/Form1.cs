@@ -21,7 +21,7 @@ namespace RandomMeds
         private int blockNOT = 0;
         private int teller = 0;
         private bool isGo = false;
-        private bool firstRunOk = false;
+        private bool isFailed = false;
         private List<String> defList = new List<string>();
         private List<String> strList = new List<string>();
         private List<String> exclList = new List<string>();
@@ -100,6 +100,46 @@ namespace RandomMeds
             }
         }
 
+        private void showBoxes()
+        {
+            //int max = numberList.Max() + 1;
+            
+            foreach (Control c in this.Controls)
+            {
+                if (c is CheckBox)
+                {
+                    CheckBox cb = (CheckBox)c;
+                    if (defList.Contains(cb.Tag.ToString()))
+                    {
+                        //int lastItem = numberList[numberList.Count - 1];
+                        int currentNumber = int.Parse(cb.Tag.ToString().Split(':')[0]);
+                        /*if ((dbleBeta.Contains(teller) || dbleRaas.Contains(teller)) && !isMaxed)
+                        {
+                            teller++;
+                            break;
+                            isMaxed = true;
+                        }*/
+
+                        if (int.Parse(cb.Tag.ToString().Split(':')[0]) <= (teller))
+                        {
+                            cb.Checked = true;
+
+                        }
+                        //defList.Add(cb.Tag.ToString());
+
+                    }
+                }
+            }
+            //strList.Clear();
+            teller++;
+        }
+        private void updateTeller(int value)
+        {
+            if (value > teller)
+            {
+                teller = value;
+            }
+        }
         private void createNames()
         {
             int left = 90;
@@ -185,6 +225,18 @@ namespace RandomMeds
                 top = 55;
             }
         }
+        private void clearAll()
+        {
+            btnGo.Enabled = false;
+            exclList.Clear();
+            isGo = true;
+            uncheckAll();
+            isGo = false;
+            defList.Clear();
+            numberList.Clear();
+            numberList.Add(0);
+            teller = 0;
+        }
         private void uncheckAll()
         {
             //numberList.Clear();
@@ -218,178 +270,27 @@ namespace RandomMeds
 
         private void btnGo_Click(object sender, EventArgs e)
         {
-            int max = numberList.Max()+1;
-            foreach (Control c in this.Controls)
+            if (teller == 0)
             {
-                if (c is CheckBox)
-                {
-                    CheckBox cb = (CheckBox)c;
-                    if (defList.Contains(cb.Tag.ToString()))
-                    {
-                        if (!showAll80ToolStripMenuItem.Checked && (int.Parse(cb.Tag.ToString().Split(':')[0]) <= (max)))
-                        {
-                            cb.Checked = true;
-
-                        } defList.Add(cb.Tag.ToString());
-
-                    }
-                }
+                teller++;
             }
-            //strList.Clear();
+            showBoxes();
         }
-
         private void button1_Click(object sender, EventArgs e)
         {
-            exclList.Clear();
-            isGo = true;
-            uncheckAll();
-            isGo = false;
-            defList.Clear();
-            numberList.Clear();
-            numberList.Add(0);
+            clearAll();
+            dbleBeta.Clear();
+            dbleRaas.Clear();
         }
-
-        private void toolStripMenuItem2_Click(object sender, EventArgs e)
-        {
-            uncheckMenuItems();
-            innerLoop = 4;
-            outerLoop = 20;
-            toolStripMenuItem2.Checked = true;
-
-        }
-        private void toolStripMenuItem3_Click(object sender, EventArgs e)
-        {
-            uncheckMenuItems();
-            innerLoop = 5;
-            outerLoop = 16;
-            toolStripMenuItem3.Checked = true;
-        }
-        private void toolStripMenuItem4_Click(object sender, EventArgs e)
-        {
-            uncheckMenuItems();
-            innerLoop = 8;
-            outerLoop = 10;
-            toolStripMenuItem4.Checked = true;
-        }
-        private void toolStripMenuItem5_Click(object sender, EventArgs e)
-        {
-            uncheckMenuItems();
-            innerLoop = 10;
-            outerLoop = 8;
-            toolStripMenuItem5.Checked = true;
-        }
-        private void toolStripMenuItem6_Click(object sender, EventArgs e)
-        {
-            uncheckMenuItems();
-            innerLoop = 16;
-            outerLoop = 5;
-            toolStripMenuItem6.Checked = true;
-        }
-        private void toolStripMenuItem7_Click(object sender, EventArgs e)
-        {
-            uncheckMenuItems();
-            innerLoop = 20;
-            outerLoop = 4;
-            toolStripMenuItem7.Checked = true;
-        }
-        private void toolStripMenuItem8_Click(object sender, EventArgs e)
-        {
-            uncheckMenuItems();
-            innerLoop = 40;
-            outerLoop = 2;
-            toolStripMenuItem8.Checked = true;
-        }
-        private void toolStripMenuItem9_Click(object sender, EventArgs e)
-        {
-            uncheckMenuItems();
-            innerLoop = 80;
-            outerLoop = 1;
-            toolStripMenuItem9.Checked = true;
-        }
-
-        private void allToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SaveFileDialog save = new SaveFileDialog();
-            save.FileName = "AllOutput.rdm";
-            save.Filter = "RandomMeds | *.rdm";
-            if (save.ShowDialog() == DialogResult.OK)
-            {
-                StreamWriter writer = new StreamWriter(save.OpenFile());
-                foreach (string s in defList)
-                {
-                    writer.WriteLine(s);
-                }
-                writer.Dispose();
-                writer.Close();
-            }
-        }
-        private void personalToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SaveFileDialog save = new SaveFileDialog();
-            save.FileName = "PersonalOutput.rdm";
-            save.Filter = "RandomMeds | *.rdm";
-            if (save.ShowDialog() == DialogResult.OK)
-            {
-                StreamWriter writer = new StreamWriter(save.OpenFile());
-                foreach (string s in exclList)
-                {
-                    writer.WriteLine(s);
-                }
-                writer.Dispose();
-                writer.Close();
-            }
-        }
-        private void infoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog open = new OpenFileDialog();
-            open.Filter = "RandomMeds|*.rdm";
-            DialogResult result = open.ShowDialog(); // Show the dialog.
-            if (result == DialogResult.OK) // Test result.
-            {
-                StreamReader file = new StreamReader(open.FileName);
-                string line;
-                try
-                {
-                    while ((line = file.ReadLine()) != null)
-                    {
-                        if (!exclList.Contains(line))
-                        {
-                            exclList.Add(line);
-                        }
-                    }
-                    //isGo = true;
-                    foreach (Control c in this.Controls)
-                    {
-                        if (c is CheckBox)
-                        {
-                            CheckBox cb = (CheckBox)c;
-                            if (exclList.Contains(cb.Tag.ToString()))
-                            {
-                                cb.Checked = true;
-                            }
-                        }
-                    } //isGo = false;
-                }
-                catch (IOException)
-                {
-                    MessageBox.Show("Er liep iet mis met het uitlezen..");
-                }
-            }
-        }
-        private void unloadDataToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            uncheckAll();
-            exclList.Clear();
-            defList.Clear();
-        }
-
-        private void showAll80ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            showAll80ToolStripMenuItem.Checked = !toolStripMenuItem9.Checked;
-        }
-
         private void button1_Click_1(object sender, EventArgs e)
         {
+            //teller++;
+            defList.Clear();
+            //exclList.Sort();
+            if (exclList.Count > 0)
+            {
+                teller = int.Parse(exclList[exclList.Count - 1].Split(':')[0]);
+            }
             isGo = true;
             uncheckAll();
             int fails = 0;
@@ -507,7 +408,9 @@ namespace RandomMeds
                     if (fails > 5000)
                     {
                         MessageBox.Show("randomisatie kan niet worden voltooid");
+                        isFailed = true;
                         fails = 0;
+                        clearAll();
                         break;
                     }
                 }
@@ -538,7 +441,173 @@ namespace RandomMeds
                 isGo = false;
                 defList.AddRange(strList);
                 btnGo.Enabled = true;
+                if (!isFailed)
+                {
+                    MessageBox.Show("Randomisatie voltooid");
+                    showBoxes();
+                } isFailed = false;
             }
+
+        private void toolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            uncheckMenuItems();
+            innerLoop = 4;
+            outerLoop = 20;
+            toolStripMenuItem2.Checked = true;
+
+        }
+        private void toolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+            uncheckMenuItems();
+            innerLoop = 5;
+            outerLoop = 16;
+            toolStripMenuItem3.Checked = true;
+        }
+        private void toolStripMenuItem4_Click(object sender, EventArgs e)
+        {
+            uncheckMenuItems();
+            innerLoop = 8;
+            outerLoop = 10;
+            toolStripMenuItem4.Checked = true;
+        }
+        private void toolStripMenuItem5_Click(object sender, EventArgs e)
+        {
+            uncheckMenuItems();
+            innerLoop = 10;
+            outerLoop = 8;
+            toolStripMenuItem5.Checked = true;
+        }
+        private void toolStripMenuItem6_Click(object sender, EventArgs e)
+        {
+            uncheckMenuItems();
+            innerLoop = 16;
+            outerLoop = 5;
+            toolStripMenuItem6.Checked = true;
+        }
+        private void toolStripMenuItem7_Click(object sender, EventArgs e)
+        {
+            uncheckMenuItems();
+            innerLoop = 20;
+            outerLoop = 4;
+            toolStripMenuItem7.Checked = true;
+        }
+        private void toolStripMenuItem8_Click(object sender, EventArgs e)
+        {
+            uncheckMenuItems();
+            innerLoop = 40;
+            outerLoop = 2;
+            toolStripMenuItem8.Checked = true;
+        }
+        private void toolStripMenuItem9_Click(object sender, EventArgs e)
+        {
+            uncheckMenuItems();
+            innerLoop = 80;
+            outerLoop = 1;
+            toolStripMenuItem9.Checked = true;
+        }
+
+        private void allToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog save = new SaveFileDialog();
+            save.FileName = "AllOutput.rdm";
+            save.Filter = "RandomMeds | *.rdm";
+            if (save.ShowDialog() == DialogResult.OK)
+            {
+                StreamWriter writer = new StreamWriter(save.OpenFile());
+                foreach (string s in defList)
+                {
+                    writer.WriteLine(s);
+                }
+                writer.Dispose();
+                writer.Close();
+            }
+        }
+        private void personalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog save = new SaveFileDialog();
+            save.FileName = "PersonalOutput.rdm";
+            save.Filter = "RandomMeds | *.rdm";
+            if (save.ShowDialog() == DialogResult.OK)
+            {
+                StreamWriter writer = new StreamWriter(save.OpenFile());
+                foreach (string s in exclList)
+                {
+                    writer.WriteLine(s);
+                }
+                writer.Dispose();
+                writer.Close();
+            }
+        }
+        private void infoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog open = new OpenFileDialog();
+            open.Filter = "RandomMeds|*.rdm";
+            DialogResult result = open.ShowDialog(); // Show the dialog.
+            if (result == DialogResult.OK) // Test result.
+            {
+                StreamReader file = new StreamReader(open.FileName);
+                string line;
+                try
+                {
+                    while ((line = file.ReadLine()) != null)
+                    {
+                        if (!exclList.Contains(line))
+                        {
+                            exclList.Add(line);
+                            updateTeller(int.Parse(line.Split(':')[0]));
+                        }
+                    }
+                    //isGo = true;
+                    foreach (Control c in this.Controls)
+                    {
+                        if (c is CheckBox)
+                        {
+                            CheckBox cb = (CheckBox)c;
+                            if (exclList.Contains(cb.Tag.ToString()))
+                            {
+                                cb.Checked = true;
+                            }
+                        }
+                    } //isGo = false;
+                }
+                catch (IOException)
+                {
+                    MessageBox.Show("Er liep iet mis met het uitlezen..");
+                }
+            }
+        }
+        private void unloadDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            uncheckAll();
+            exclList.Clear();
+            defList.Clear();
+        }
+
+        private void showAll80ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (Control c in this.Controls)
+            {
+                if (c is CheckBox)
+                {
+                    CheckBox cb = (CheckBox)c;
+                    if (defList.Contains(cb.Tag.ToString()))
+                    {
+                        
+                            cb.Checked = true;
+
+                         //defList.Add(cb.Tag.ToString());
+
+                    }
+                }
+            }
+        }
+
+        private void btnEdit_Click(object sender, EventArgs e)
+        {
+
+        }
+
+       
 
         }
     }
